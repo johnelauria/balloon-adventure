@@ -114,13 +114,13 @@ class Player(world: World) : Asset, Touchable {
      * Runner width is 10% of screen width
      */
     private fun playerWidth(): Float {
-        return Gdx.graphics.width / 10f
+        return Gdx.graphics.width / 13f
     }
 
     /**
      * Runner height is 5% of screen height
      */
     private fun playerHeight(): Float {
-        return Gdx.graphics.height / 5f
+        return Gdx.graphics.height / 8f
     }
 }

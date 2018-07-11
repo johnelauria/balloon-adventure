@@ -13,9 +13,11 @@ class BeeLeft(world: World) : Asset {
     private var beeAnimation: Animation<TextureRegion>
     private var beeAtlas: TextureAtlas = TextureAtlas(Gdx.files.internal("bee_left/bee_left.atlas"))
     private var beeBody: Body
-    private val beeWidth = Gdx.graphics.width / 15f
-    private val beeHeight = Gdx.graphics.height / 10f
+    private val beeWidth = Gdx.graphics.width / 20f
+    private val beeHeight = Gdx.graphics.height / 14f
     private var animationTime = 0f
+    private var isMovingUpDown = false
+    private var verticalVelocity = 3f
 
     init {
         val beeBodyDef = BodyDef()
@@ -74,7 +76,9 @@ class BeeLeft(world: World) : Asset {
     fun randomisePosition() {
         val random = Random()
         val minX = Gdx.graphics.width * 1.1f
-        val maxX = Gdx.graphics.width * 1.6f
+        val maxX = Gdx.graphics.width * 2.8f
+        isMovingUpDown = random.nextBoolean()
+        verticalVelocity = if (isMovingUpDown) 3f else 0f
 
         setBeePosition(
                 random.nextFloat() * (maxX - minX) + minX,
@@ -82,13 +86,20 @@ class BeeLeft(world: World) : Asset {
         )
     }
 
+    /**
+     * Moves the bee from right to left. By change, the bee may also move up and down, or just
+     * fly straight
+     */
     private fun moveBee() {
         if (beeBody.position.x < beeWidth * -2) {
             randomisePosition()
         } else {
+            if (isMovingUpDown && beeBody.position.y > Gdx.graphics.height || beeBody.position.y < 0)
+                verticalVelocity *= -1
+
             setBeePosition(
                     beeBody.position.x - 3f,
-                    beeBody.position.y
+                    beeBody.position.y + verticalVelocity
             )
         }
     }
