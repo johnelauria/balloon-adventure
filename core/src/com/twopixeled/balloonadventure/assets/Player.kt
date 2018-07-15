@@ -29,13 +29,14 @@ class Player(world: World) : Asset, Touchable {
         playerAnimation = Animation(0.1f, playerAtlas.regions)
         playerBodyDef.type = BodyDef.BodyType.DynamicBody
         playerBodyDef.position.set(Gdx.graphics.width / 4f, Gdx.graphics.height / 2f)
+        playerBodyDef.gravityScale = 0.3f
 
         playerBody = world.createBody(playerBodyDef)
         playerShape.setAsBox(playerWidth() / 2, playerHeight() / 2)
 
         playerFixtureDef.shape = playerShape
         playerFixtureDef.density = 1f
-        playerFixtureDef.restitution = 0.5f
+        playerFixtureDef.restitution = 5f
 
         playerBody.createFixture(playerFixtureDef)
         playerBody.userData = this
@@ -69,22 +70,20 @@ class Player(world: World) : Asset, Touchable {
      * half side is touched, player jumps upper left. Otherwise, player jumps upper right
      */
     override fun touchDown(screenX: Float, screenY: Float) {
-        if (balloonCount > 0) {
-            if (screenX < Gdx.graphics.width / 2) {
-                playerBody.setLinearVelocity(
-                        Gdx.graphics.width * leftSpeed,
-                        Gdx.graphics.height * 7f
-                )
-                updateHorizontalVelocity(false)
-            }
+        if (screenX < Gdx.graphics.width / 2) {
+            playerBody.setLinearVelocity(
+                    Gdx.graphics.width * leftSpeed,
+                    Gdx.graphics.height * 5.5f
+            )
+            updateHorizontalVelocity(false)
+        }
 
-            if (screenX > Gdx.graphics.width / 2) {
-                playerBody.setLinearVelocity(
-                        Gdx.graphics.width * rightSpeed,
-                        Gdx.graphics.height * 7f
-                )
-                updateHorizontalVelocity(true)
-            }
+        if (screenX > Gdx.graphics.width / 2) {
+            playerBody.setLinearVelocity(
+                    Gdx.graphics.width * rightSpeed,
+                    Gdx.graphics.height * 5.5f
+            )
+            updateHorizontalVelocity(true)
         }
     }
 
@@ -93,7 +92,10 @@ class Player(world: World) : Asset, Touchable {
      * jump higher
      */
     fun popBalloon() {
-        balloonCount--
+        if (balloonCount-- <= 0)
+            playerBody.gravityScale = 20f
+        else
+            playerBody.gravityScale += 2f
     }
 
     /**

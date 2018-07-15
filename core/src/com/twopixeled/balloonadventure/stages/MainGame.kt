@@ -2,7 +2,6 @@ package com.twopixeled.balloonadventure.stages
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.math.Vector2
 import com.twopixeled.balloonadventure.assets.BeeLeft
 import com.twopixeled.balloonadventure.assets.Player
 import com.twopixeled.balloonadventure.listeners.MainGameContactListener
@@ -28,8 +27,7 @@ class MainGame : Stage() {
         super.dispose()
     }
 
-    fun increaseGravity() {
-        world.gravity = Vector2(0f, -200f)
+    fun popPlayerBalloon() {
         player.popBalloon()
     }
 }

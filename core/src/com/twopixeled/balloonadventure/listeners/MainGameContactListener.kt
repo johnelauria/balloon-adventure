@@ -10,15 +10,16 @@ import com.twopixeled.balloonadventure.stages.MainGame
 
 class MainGameContactListener(private val mainGame: MainGame) : ContactListener {
     override fun endContact(contact: Contact?) {
-    }
-
-    override fun beginContact(contact: Contact?) {
         val body1 = contact?.fixtureA
         val body2 = contact?.fixtureB
 
         if (body1?.body?.userData is Player && body2?.body?.userData is BeeLeft) {
-            mainGame.increaseGravity()
+            mainGame.popPlayerBalloon()
         }
+    }
+
+    override fun beginContact(contact: Contact?) {
+
     }
 
     override fun preSolve(contact: Contact?, oldManifold: Manifold?) {
