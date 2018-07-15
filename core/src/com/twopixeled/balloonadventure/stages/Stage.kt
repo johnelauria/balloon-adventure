@@ -29,7 +29,7 @@ abstract class Stage {
     /**
      * Disposes all assets for this stage
      */
-    fun dispose() {
+    open fun dispose() {
         assets.forEach { asset: Asset -> asset.dispose() }
         world.dispose()
     }

@@ -7,12 +7,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.physics.box2d.*
 import com.twopixeled.balloonadventure.assets.assetTypes.Asset
-import java.util.*
+import java.util.Random
 
-class BeeLeft(world: World) : Asset {
-    private var beeAnimation: Animation<TextureRegion>
-    private var beeAtlas: TextureAtlas = TextureAtlas(Gdx.files.internal("bee_left/bee_left.atlas"))
-    private var beeBody: Body
+class BeeLeft(world: World, beeAtlas: TextureAtlas) : Asset {
+    private val beeAnimation: Animation<TextureRegion>
+    private val beeBody: Body
     private val beeWidth = Gdx.graphics.width / 20f
     private val beeHeight = Gdx.graphics.height / 14f
     private var animationTime = 0f
@@ -59,14 +58,7 @@ class BeeLeft(world: World) : Asset {
     }
 
     override fun dispose() {
-        beeAtlas.dispose()
-    }
-
-    /**
-     * Sets the position of the bee in the given x & y coordinates
-     */
-    fun setBeePosition(x: Float, y: Float) {
-        beeBody.setTransform(x, y, 1f)
+        // beeAtlas is disposed by MainGame
     }
 
     /**
@@ -84,6 +76,13 @@ class BeeLeft(world: World) : Asset {
                 random.nextFloat() * (maxX - minX) + minX,
                 random.nextInt(Gdx.graphics.height).toFloat()
         )
+    }
+
+    /**
+     * Sets the position of the bee in the given x & y coordinates
+     */
+    private fun setBeePosition(x: Float, y: Float) {
+        beeBody.setTransform(x, y, 1f)
     }
 
     /**
