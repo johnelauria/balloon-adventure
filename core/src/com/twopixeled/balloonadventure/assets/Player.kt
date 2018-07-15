@@ -5,11 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.physics.box2d.Body
-import com.badlogic.gdx.physics.box2d.BodyDef
-import com.badlogic.gdx.physics.box2d.PolygonShape
-import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.physics.box2d.FixtureDef
+import com.badlogic.gdx.physics.box2d.*
 import com.twopixeled.balloonadventure.assets.assetTypes.Asset
 import com.twopixeled.balloonadventure.assets.assetTypes.Touchable
 
@@ -23,6 +19,7 @@ class Player(world: World) : Asset, Touchable {
     private var animationTime = 0f
     private var leftSpeed = -4f
     private var rightSpeed = 4f
+    private var balloonCount = 2
 
     init {
         val playerBodyDef = BodyDef()
@@ -41,6 +38,7 @@ class Player(world: World) : Asset, Touchable {
         playerFixtureDef.restitution = 0.5f
 
         playerBody.createFixture(playerFixtureDef)
+        playerBody.userData = this
         playerShape.dispose()
     }
 
@@ -71,21 +69,31 @@ class Player(world: World) : Asset, Touchable {
      * half side is touched, player jumps upper left. Otherwise, player jumps upper right
      */
     override fun touchDown(screenX: Float, screenY: Float) {
-        if (screenX < Gdx.graphics.width / 2) {
-            playerBody.setLinearVelocity(
-                    Gdx.graphics.width * leftSpeed,
-                    Gdx.graphics.height * 7f
-            )
-            updateHorizontalVelocity(false)
-        }
+        if (balloonCount > 0) {
+            if (screenX < Gdx.graphics.width / 2) {
+                playerBody.setLinearVelocity(
+                        Gdx.graphics.width * leftSpeed,
+                        Gdx.graphics.height * 7f
+                )
+                updateHorizontalVelocity(false)
+            }
 
-        if (screenX > Gdx.graphics.width / 2) {
-            playerBody.setLinearVelocity(
-                    Gdx.graphics.width * rightSpeed,
-                    Gdx.graphics.height * 7f
-            )
-            updateHorizontalVelocity(true)
+            if (screenX > Gdx.graphics.width / 2) {
+                playerBody.setLinearVelocity(
+                        Gdx.graphics.width * rightSpeed,
+                        Gdx.graphics.height * 7f
+                )
+                updateHorizontalVelocity(true)
+            }
         }
+    }
+
+    /**
+     * Reduce the balloon for the player. If balloon count drops to 0, player can no longer
+     * jump higher
+     */
+    fun popBalloon() {
+        balloonCount--
     }
 
     /**

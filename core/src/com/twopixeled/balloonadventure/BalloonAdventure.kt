@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL30
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.twopixeled.balloonadventure.listeners.InputListener
 import com.twopixeled.balloonadventure.stages.MainGame
 import com.twopixeled.balloonadventure.stages.Stage
 

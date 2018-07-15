@@ -16,7 +16,7 @@ abstract class Stage {
      * will show above the assets on lower indices
      */
     protected val assets = mutableListOf<Asset>()
-    protected var world = World(Vector2(0f, -50f), true)
+    protected var world = World(Vector2(0f, -40f), true)
 
     /**
      * Draws all the assets for this stage

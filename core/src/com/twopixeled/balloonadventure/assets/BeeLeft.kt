@@ -34,6 +34,7 @@ class BeeLeft(world: World, beeAtlas: TextureAtlas) : Asset {
         beeFixtureDef.density = 1f
 
         beeBody.createFixture(beeFixtureDef)
+        beeBody.userData = this
         beeShape.dispose()
     }
 

@@ -1,4 +1,4 @@
-package com.twopixeled.balloonadventure
+package com.twopixeled.balloonadventure.listeners
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
