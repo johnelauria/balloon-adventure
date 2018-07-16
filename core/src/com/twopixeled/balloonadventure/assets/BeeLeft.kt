@@ -12,8 +12,8 @@ import java.util.Random
 class BeeLeft(world: World, beeAtlas: TextureAtlas) : Asset {
     private val beeAnimation: Animation<TextureRegion>
     private val beeBody: Body
-    private val beeWidth = Gdx.graphics.width / 20f
-    private val beeHeight = Gdx.graphics.height / 14f
+    private val beeWidth = Gdx.graphics.width / 25f
+    private val beeHeight = Gdx.graphics.height / 19f
     private var animationTime = 0f
     private var isMovingUpDown = false
     private var verticalVelocity = 3f

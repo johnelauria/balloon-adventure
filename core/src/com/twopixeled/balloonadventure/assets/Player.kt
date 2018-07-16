@@ -20,6 +20,8 @@ class Player(world: World) : Asset, Touchable {
     private var leftSpeed = -4f
     private var rightSpeed = 4f
     private var balloonCount = 2
+    private var isHit = false
+    private var hitTimer = 0
 
     init {
         val playerBodyDef = BodyDef()
@@ -59,6 +61,8 @@ class Player(world: World) : Asset, Touchable {
                 1f,
                 1f
         )
+
+        countHitTimer()
     }
 
     override fun dispose() {
@@ -92,10 +96,14 @@ class Player(world: World) : Asset, Touchable {
      * jump higher
      */
     fun popBalloon() {
-        if (balloonCount-- <= 0)
-            playerBody.gravityScale = 20f
-        else
-            playerBody.gravityScale += 2f
+        if (!isHit) {
+            if (balloonCount-- <= 0)
+                playerBody.gravityScale = 20f
+            else
+                playerBody.gravityScale += 2f
+
+            isHit = true
+        }
     }
 
     /**
@@ -105,16 +113,18 @@ class Player(world: World) : Asset, Touchable {
      * speed is reset to 1, and will increase again after simultaneous move to same direction
      */
     private fun updateHorizontalVelocity(isRightTouched: Boolean) {
+        val maxHorizontalSpd = if (balloonCount >= 2) 8f else 3f
+
         if (isRightTouched) {
             leftSpeed = -1f
 
-            if (rightSpeed < 8f) {
+            if (rightSpeed < maxHorizontalSpd) {
                 rightSpeed += 1f
             }
         } else {
             rightSpeed = 1f
 
-            if (leftSpeed > -8f) {
+            if (leftSpeed > -maxHorizontalSpd) {
                 leftSpeed -= 1f
             }
         }
@@ -132,5 +142,19 @@ class Player(world: World) : Asset, Touchable {
      */
     private fun playerHeight(): Float {
         return Gdx.graphics.height / 8f
+    }
+
+    /**
+     * If player is hit, give a short period of immunity to give chance of avoiding bees
+     */
+    private fun countHitTimer() {
+        if (isHit) {
+            hitTimer++
+
+            if (hitTimer > 100) {
+                isHit = false
+                hitTimer = 0
+            }
+        }
     }
 }
