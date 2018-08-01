@@ -74,10 +74,11 @@ class Player(world: World) : Asset, Touchable {
      * half side is touched, player jumps upper left. Otherwise, player jumps upper right
      */
     override fun touchDown(screenX: Float, screenY: Float) {
+        val verticalJumpSpd = if (balloonCount > 0) 4f else 0f
         if (screenX < Gdx.graphics.width / 2) {
             playerBody.setLinearVelocity(
                     Gdx.graphics.width * leftSpeed,
-                    Gdx.graphics.height * 5.5f
+                    Gdx.graphics.height * verticalJumpSpd
             )
             updateHorizontalVelocity(false)
         }
@@ -85,7 +86,7 @@ class Player(world: World) : Asset, Touchable {
         if (screenX > Gdx.graphics.width / 2) {
             playerBody.setLinearVelocity(
                     Gdx.graphics.width * rightSpeed,
-                    Gdx.graphics.height * 5.5f
+                    Gdx.graphics.height * verticalJumpSpd
             )
             updateHorizontalVelocity(true)
         }
@@ -134,14 +135,14 @@ class Player(world: World) : Asset, Touchable {
      * Runner width is 10% of screen width
      */
     private fun playerWidth(): Float {
-        return Gdx.graphics.width / 13f
+        return Gdx.graphics.width / 16f
     }
 
     /**
      * Runner height is 5% of screen height
      */
     private fun playerHeight(): Float {
-        return Gdx.graphics.height / 8f
+        return Gdx.graphics.height / 10.5f
     }
 
     /**
