@@ -23,7 +23,7 @@ abstract class Stage {
      */
     fun draw(batch: SpriteBatch) {
         assets.forEach { asset: Asset -> asset.draw(batch) }
-        for (c in 1..3) world.step(1 / 60f, 6, 2)
+        world.step(1 / 60f, 6, 2)
     }
 
     /**

@@ -7,16 +7,19 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.physics.box2d.*
 import com.twopixeled.balloonadventure.assets.assetTypes.Asset
+import com.twopixeled.balloonadventure.configs.PIXEL_TO_METER
+import com.twopixeled.balloonadventure.configs.SCREEN_HEIGHT
+import com.twopixeled.balloonadventure.configs.SCREEN_WIDTH
 import java.util.Random
 
 class BeeLeft(world: World, beeAtlas: TextureAtlas) : Asset {
     private val beeAnimation: Animation<TextureRegion>
     private val beeBody: Body
-    private val beeWidth = Gdx.graphics.width / 25f
-    private val beeHeight = Gdx.graphics.height / 19f
+    private val beeWidth = 70f
+    private val beeHeight = 90f
     private var animationTime = 0f
     private var isMovingUpDown = false
-    private var verticalVelocity = 3f
+    private var verticalVelocity = 2f
 
     init {
         val beeBodyDef = BodyDef()
@@ -25,10 +28,13 @@ class BeeLeft(world: World, beeAtlas: TextureAtlas) : Asset {
 
         beeAnimation = Animation(0.1f, beeAtlas.regions)
         beeBodyDef.type = BodyDef.BodyType.KinematicBody
-        beeBodyDef.position.set(Gdx.graphics.width / 1.5f, Gdx.graphics.height / 2f)
+        beeBodyDef.position.set(
+                SCREEN_WIDTH / 2 / PIXEL_TO_METER,
+                SCREEN_HEIGHT / 2 / PIXEL_TO_METER
+        )
 
         beeBody = world.createBody(beeBodyDef)
-        beeShape.setAsBox(beeWidth / 2, beeHeight / 2)
+        beeShape.setAsBox(beeWidth / 2 / PIXEL_TO_METER, beeHeight / 2 / PIXEL_TO_METER)
 
         beeFixtureDef.shape = beeShape
         beeFixtureDef.density = 1f
@@ -44,8 +50,8 @@ class BeeLeft(world: World, beeAtlas: TextureAtlas) : Asset {
 
         batch.draw(
                 beeRegion,
-                beeBody.position.x - beeWidth / 2,
-                beeBody.position.y - beeHeight / 2,
+                (beeBody.position.x * PIXEL_TO_METER) - beeWidth / 2,
+                (beeBody.position.y * PIXEL_TO_METER) - beeHeight / 2,
                 beeWidth / 2,
                 beeHeight / 2,
                 beeWidth,
@@ -68,14 +74,14 @@ class BeeLeft(world: World, beeAtlas: TextureAtlas) : Asset {
      */
     fun randomisePosition() {
         val random = Random()
-        val minX = Gdx.graphics.width * 1.1f
-        val maxX = Gdx.graphics.width * 2.8f
+        val minX = SCREEN_WIDTH * 1.2f
+        val maxX = SCREEN_WIDTH * 2
         isMovingUpDown = random.nextBoolean()
-        verticalVelocity = if (isMovingUpDown) 3f else 0f
+        verticalVelocity = if (isMovingUpDown) 3 / PIXEL_TO_METER else 0f
 
         setBeePosition(
-                random.nextFloat() * (maxX - minX) + minX,
-                random.nextInt(Gdx.graphics.height).toFloat()
+                (random.nextFloat() * (maxX - minX) + minX) / PIXEL_TO_METER,
+                random.nextInt(SCREEN_HEIGHT.toInt()).toFloat() / PIXEL_TO_METER
         )
     }
 
@@ -91,15 +97,18 @@ class BeeLeft(world: World, beeAtlas: TextureAtlas) : Asset {
      * fly straight
      */
     private fun moveBee() {
-        if (beeBody.position.x < beeWidth * -2) {
+        val beePosX = beeBody.position.x
+        val beePosY = beeBody.position.y
+
+        if (beePosX < -beeWidth / PIXEL_TO_METER) {
             randomisePosition()
         } else {
-            if (isMovingUpDown && beeBody.position.y > Gdx.graphics.height || beeBody.position.y < 0)
+            if (isMovingUpDown && beePosY < SCREEN_HEIGHT || beePosY < 0)
                 verticalVelocity *= -1
 
             setBeePosition(
-                    beeBody.position.x - 3f,
-                    beeBody.position.y + verticalVelocity
+                    beePosX - (5 / PIXEL_TO_METER),
+                    beePosY + verticalVelocity
             )
         }
     }

@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.physics.box2d.*
 import com.twopixeled.balloonadventure.assets.assetTypes.Asset
 import com.twopixeled.balloonadventure.assets.assetTypes.Touchable
+import com.twopixeled.balloonadventure.configs.PIXEL_TO_METER
+import com.twopixeled.balloonadventure.configs.SCREEN_HEIGHT
+import com.twopixeled.balloonadventure.configs.SCREEN_WIDTH
 
 /**
  * This is the main player in the game
@@ -17,11 +20,10 @@ class Player(world: World) : Asset, Touchable {
     private var playerAtlas: TextureAtlas = TextureAtlas(Gdx.files.internal("player/player.atlas"))
     private var playerBody: Body
     private var animationTime = 0f
-    private var leftSpeed = -4f
-    private var rightSpeed = 4f
     private var balloonCount = 2
     private var isHit = false
     private var hitTimer = 0
+    private var horizontalSpd = 0
 
     init {
         val playerBodyDef = BodyDef()
@@ -30,15 +32,18 @@ class Player(world: World) : Asset, Touchable {
 
         playerAnimation = Animation(0.1f, playerAtlas.regions)
         playerBodyDef.type = BodyDef.BodyType.DynamicBody
-        playerBodyDef.position.set(Gdx.graphics.width / 4f, Gdx.graphics.height / 2f)
-        playerBodyDef.gravityScale = 0.3f
+        playerBodyDef.position.set(
+                SCREEN_WIDTH / 2 / PIXEL_TO_METER,
+                SCREEN_HEIGHT / 1.5f / PIXEL_TO_METER
+        )
+        playerBodyDef.gravityScale = 0.1f
 
         playerBody = world.createBody(playerBodyDef)
-        playerShape.setAsBox(playerWidth() / 2, playerHeight() / 2)
+        playerShape.setAsBox(playerWidth() / 2 / PIXEL_TO_METER, playerHeight() / 2 / PIXEL_TO_METER)
 
         playerFixtureDef.shape = playerShape
-        playerFixtureDef.density = 1f
-        playerFixtureDef.restitution = 5f
+        playerFixtureDef.density = 0.1f
+        playerFixtureDef.restitution = 0.5f
 
         playerBody.createFixture(playerFixtureDef)
         playerBody.userData = this
@@ -51,8 +56,8 @@ class Player(world: World) : Asset, Touchable {
 
         batch.draw(
                 playerRegion,
-                playerBody.position.x - playerWidth() / 2,
-                playerBody.position.y - playerHeight() / 2,
+                (playerBody.position.x * PIXEL_TO_METER) - playerWidth() / 2,
+                (playerBody.position.y * PIXEL_TO_METER) - playerHeight() / 2,
                 playerWidth() / 2,
                 playerHeight() / 2,
                 playerWidth(),
@@ -74,21 +79,21 @@ class Player(world: World) : Asset, Touchable {
      * half side is touched, player jumps upper left. Otherwise, player jumps upper right
      */
     override fun touchDown(screenX: Float, screenY: Float) {
-        val verticalJumpSpd = if (balloonCount > 0) 4f else 0f
-        if (screenX < Gdx.graphics.width / 2) {
-            playerBody.setLinearVelocity(
-                    Gdx.graphics.width * leftSpeed,
-                    Gdx.graphics.height * verticalJumpSpd
-            )
-            updateHorizontalVelocity(false)
+        // horizontal moving
+        if (screenX < (Gdx.graphics.width / 4) && horizontalSpd > -4) {
+            playerBody.applyForceToCenter(-5f, 0f, true)
+            horizontalSpd--
         }
 
-        if (screenX > Gdx.graphics.width / 2) {
-            playerBody.setLinearVelocity(
-                    Gdx.graphics.width * rightSpeed,
-                    Gdx.graphics.height * verticalJumpSpd
-            )
-            updateHorizontalVelocity(true)
+        if (screenX > Gdx.graphics.width / 4 && screenX < Gdx.graphics.width / 2 && horizontalSpd < 4) {
+            playerBody.applyForceToCenter(5f, 0f, true)
+            horizontalSpd++
+        }
+
+        //vertical moving
+        val verticalJumpSpd = if (balloonCount > 0) 25f else 0f
+        if (screenX > Gdx.graphics.width / 1.5f) {
+            playerBody.applyForceToCenter(0f,verticalJumpSpd,true)
         }
     }
 
@@ -99,35 +104,11 @@ class Player(world: World) : Asset, Touchable {
     fun popBalloon() {
         if (!isHit) {
             if (balloonCount-- <= 0)
-                playerBody.gravityScale = 20f
+                playerBody.gravityScale = 1f
             else
-                playerBody.gravityScale += 2f
+                playerBody.gravityScale += 0.1f
 
             isHit = true
-        }
-    }
-
-    /**
-     * Adjusts the horizontal velocity of player. Moving the player initially has slow
-     * horizontal speed, when moved multiple times to that direction, horizontal speed increases
-     * until max speed of 8 is achieved. Once the player is moved to another direction, horizontal
-     * speed is reset to 1, and will increase again after simultaneous move to same direction
-     */
-    private fun updateHorizontalVelocity(isRightTouched: Boolean) {
-        val maxHorizontalSpd = if (balloonCount >= 2) 8f else 3f
-
-        if (isRightTouched) {
-            leftSpeed = -1f
-
-            if (rightSpeed < maxHorizontalSpd) {
-                rightSpeed += 1f
-            }
-        } else {
-            rightSpeed = 1f
-
-            if (leftSpeed > -maxHorizontalSpd) {
-                leftSpeed -= 1f
-            }
         }
     }
 
@@ -135,14 +116,14 @@ class Player(world: World) : Asset, Touchable {
      * Runner width is 10% of screen width
      */
     private fun playerWidth(): Float {
-        return Gdx.graphics.width / 16f
+        return SCREEN_WIDTH / 20
     }
 
     /**
      * Runner height is 5% of screen height
      */
     private fun playerHeight(): Float {
-        return Gdx.graphics.height / 10.5f
+        return SCREEN_HEIGHT / 10
     }
 
     /**
