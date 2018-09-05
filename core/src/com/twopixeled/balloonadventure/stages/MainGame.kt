@@ -18,8 +18,8 @@ class MainGame : Stage() {
     private val camera = OrthographicCamera()
 
     init {
-//        Ceiling(world)
-//        Walls(world)
+        Ceiling(world)
+        Walls(world)
         assets.add(player)
 
         for (bee in 1..4) {

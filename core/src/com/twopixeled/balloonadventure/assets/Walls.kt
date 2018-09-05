@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
+import com.twopixeled.balloonadventure.configs.PIXEL_TO_METER
 
 /**
  * Create an invisible wall to prevent player from jumping beyond the left/right playing area
@@ -17,11 +18,17 @@ class Walls(world: World) {
         val wallFixtureDef = FixtureDef()
 
         wallBodyDef1.type = BodyDef.BodyType.StaticBody
-        wallBodyDef1.position.set(0f, Gdx.graphics.height.toFloat())
+        wallBodyDef1.position.set(
+                -100 / PIXEL_TO_METER,
+                Gdx.graphics.height / PIXEL_TO_METER
+        )
         val wallBody1 = world.createBody(wallBodyDef1)
 
         wallBodyDef2.type = BodyDef.BodyType.StaticBody
-        wallBodyDef2.position.set(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
+        wallBodyDef2.position.set(
+                (Gdx.graphics.width + 100) / PIXEL_TO_METER,
+                Gdx.graphics.height.toFloat() / PIXEL_TO_METER
+        )
         val wallBody2 = world.createBody(wallBodyDef2)
 
         wallShape.setAsBox(1f, Gdx.graphics.height.toFloat())
