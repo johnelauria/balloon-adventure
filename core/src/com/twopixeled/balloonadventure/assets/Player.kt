@@ -23,7 +23,6 @@ class Player(world: World) : Asset, Touchable {
     private var balloonCount = 2
     private var isHit = false
     private var hitTimer = 0
-    private var horizontalSpd = 0
 
     init {
         val playerBodyDef = BodyDef()
@@ -80,14 +79,12 @@ class Player(world: World) : Asset, Touchable {
      */
     override fun touchDown(screenX: Float, screenY: Float) {
         // horizontal moving
-        if (screenX < (Gdx.graphics.width / 4) && horizontalSpd > -4) {
+        if (screenX < (Gdx.graphics.width / 4)) {
             playerBody.applyForceToCenter(-5f, 0f, true)
-            horizontalSpd--
         }
 
-        if (screenX > Gdx.graphics.width / 4 && screenX < Gdx.graphics.width / 2 && horizontalSpd < 4) {
+        if (screenX > Gdx.graphics.width / 4 && screenX < Gdx.graphics.width / 2) {
             playerBody.applyForceToCenter(5f, 0f, true)
-            horizontalSpd++
         }
 
         //vertical moving
